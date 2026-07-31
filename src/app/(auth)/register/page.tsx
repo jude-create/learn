@@ -6,7 +6,7 @@ export default function RegisterPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold">Create your account</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Join as a learner or educator.</p>
+      <p className="mt-2 text-sm text-muted-foreground">Join your school community as a student.</p>
       <div className="mt-6">
         <GoogleSignInButton label="Sign up with Google" />
       </div>

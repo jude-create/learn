@@ -17,8 +17,7 @@ export async function registerAction(_: ActionState, formData: FormData): Promis
     fullName: formData.get("fullName"),
     email: formData.get("email"),
     password: formData.get("password"),
-    confirmPassword: formData.get("confirmPassword"),
-    role: formData.get("role")
+    confirmPassword: formData.get("confirmPassword")
   });
 
   if (!parsed.success) {
@@ -32,9 +31,9 @@ export async function registerAction(_: ActionState, formData: FormData): Promis
     options: {
       data: {
         full_name: parsed.data.fullName,
-        role: parsed.data.role
+        role: "student"
       },
-      emailRedirectTo: `${getAppUrl()}/auth/callback?next=/dashboard`
+      emailRedirectTo: `${getAppUrl()}/auth/callback?next=/onboarding`
     }
   });
 
@@ -51,6 +50,7 @@ export async function loginAction(_: ActionState, formData: FormData): Promise<A
     email: formData.get("email"),
     password: formData.get("password")
   });
+  const redirectTo = String(formData.get("redirectTo") || "/dashboard");
 
   if (!parsed.success) {
     return { ok: false, message: parsed.error.errors[0]?.message ?? "Check your details." };
@@ -73,7 +73,7 @@ export async function loginAction(_: ActionState, formData: FormData): Promise<A
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role,is_suspended")
+    .select("role,is_suspended,onboarding_completed")
     .eq("id", user.id)
     .single();
 
@@ -83,6 +83,14 @@ export async function loginAction(_: ActionState, formData: FormData): Promise<A
   }
 
   revalidatePath("/", "layout");
+  if (!profile.onboarding_completed) {
+    redirect("/onboarding");
+  }
+
+  if (redirectTo.startsWith("/") && !redirectTo.startsWith("/dashboard")) {
+    redirect(redirectTo);
+  }
+
   redirect(getRoleDashboard(profile.role));
 }
 
@@ -98,7 +106,7 @@ export async function signInWithGoogleAction() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${getAppUrl()}/auth/callback?next=/dashboard`
+      redirectTo: `${getAppUrl()}/auth/callback?next=/onboarding`
     }
   });
 

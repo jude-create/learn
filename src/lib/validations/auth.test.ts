@@ -2,19 +2,18 @@ import { describe, expect, it } from "vitest";
 import { loginSchema, registerSchema } from "@/lib/validations/auth";
 
 describe("auth validation", () => {
-  it("allows students and instructors to register", () => {
+  it("allows students to register without choosing a role", () => {
     const result = registerSchema.safeParse({
       fullName: "Taylor Reed",
       email: "taylor@example.com",
       password: "password123",
-      confirmPassword: "password123",
-      role: "student"
+      confirmPassword: "password123"
     });
 
     expect(result.success).toBe(true);
   });
 
-  it("rejects admin registration", () => {
+  it("does not include client-provided roles in registration data", () => {
     const result = registerSchema.safeParse({
       fullName: "Avery Admin",
       email: "admin@example.com",
@@ -23,7 +22,8 @@ describe("auth validation", () => {
       role: "admin"
     });
 
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
+    expect(result.data).not.toHaveProperty("role");
   });
 
   it("requires matching passwords", () => {
@@ -31,8 +31,7 @@ describe("auth validation", () => {
       fullName: "Taylor Reed",
       email: "taylor@example.com",
       password: "password123",
-      confirmPassword: "password456",
-      role: "instructor"
+      confirmPassword: "password456"
     });
 
     expect(result.success).toBe(false);

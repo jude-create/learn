@@ -3,32 +3,21 @@ import { BookOpen, Compass, GraduationCap, Home, LayoutDashboard, Shield, Users 
 import { requireProfile } from "@/lib/auth/session";
 import { LogoutButton } from "@/components/auth/logout-button";
 
-const navByRole = {
-  student: [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/courses", label: "Browse courses", icon: Compass },
-    { href: "/dashboard/student", label: "Overview", icon: LayoutDashboard },
-    { href: "/dashboard/student/courses", label: "My courses", icon: BookOpen }
-  ],
-  instructor: [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/courses", label: "Browse courses", icon: Compass },
-    { href: "/dashboard/instructor", label: "Overview", icon: LayoutDashboard },
-    { href: "/dashboard/instructor/courses", label: "Courses", icon: BookOpen }
-  ],
-  admin: [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/courses", label: "Browse courses", icon: Compass },
-    { href: "/dashboard/admin", label: "Overview", icon: LayoutDashboard },
-    { href: "/dashboard/admin/users", label: "Users", icon: Users },
-    { href: "/dashboard/admin/courses", label: "Courses", icon: BookOpen },
-    { href: "/dashboard/admin/comments", label: "Comments", icon: Shield }
-  ]
-};
+const nav = [
+  { href: "/", label: "Home", icon: Home },
+  { href: "/schools", label: "Browse schools", icon: Compass },
+  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard/uploads", label: "Uploads", icon: BookOpen },
+  { href: "/dashboard/downloads", label: "Downloads", icon: Users }
+];
+
+const adminNav = [
+  { href: "/dashboard/admin", label: "Admin", icon: Shield }
+];
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { profile } = await requireProfile();
-  const nav = navByRole[profile.role];
+  const items = profile.role === "admin" ? [...nav, ...adminNav] : nav;
 
   return (
     <div className="min-h-screen bg-muted md:grid md:grid-cols-[260px_1fr]">
@@ -41,7 +30,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             Learn Big
           </Link>
           <nav className="hidden gap-1 md:flex md:flex-col">
-            {nav.map((item) => {
+            {items.map((item) => {
               const Icon = item.icon;
               return (
                 <Link key={item.href} href={item.href} className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground">
@@ -68,9 +57,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 <Home className="h-4 w-4" aria-hidden />
                 Home
               </Link>
-              <Link href="/courses" className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground">
+              <Link href="/schools" className="inline-flex h-9 items-center gap-2 rounded-md border border-border px-3 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground">
                 <Compass className="h-4 w-4" aria-hidden />
-                Browse courses
+                Browse schools
               </Link>
             </div>
           </div>

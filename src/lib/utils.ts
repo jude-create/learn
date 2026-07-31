@@ -14,5 +14,5 @@ export function slugify(value: string) {
 }
 
 export function getRoleDashboard(role: "student" | "instructor" | "admin") {
-  return `/dashboard/${role}`;
+  return role === "admin" ? "/dashboard/admin" : "/dashboard";
 }

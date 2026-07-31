@@ -8,7 +8,6 @@ import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
 import { AuthFormMessage } from "@/components/auth/auth-form-message";
 import { PasswordInput } from "@/components/auth/password-input";
 
@@ -22,8 +21,7 @@ export function RegisterForm() {
       fullName: "",
       email: "",
       password: "",
-      confirmPassword: "",
-      role: "student"
+      confirmPassword: ""
     }
   });
 
@@ -44,7 +42,6 @@ export function RegisterForm() {
     formData.set("email", parsed.data.email);
     formData.set("password", parsed.data.password);
     formData.set("confirmPassword", parsed.data.confirmPassword);
-    formData.set("role", parsed.data.role);
     startTransition(async () => {
       const result = await registerAction(initialState, formData);
       setState(result);
@@ -62,13 +59,6 @@ export function RegisterForm() {
         <Label htmlFor="email">Email</Label>
         <Input id="email" type="email" autoComplete="email" {...form.register("email")} />
         {form.formState.errors.email ? <p className="text-sm text-destructive">{form.formState.errors.email.message}</p> : null}
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="role">Role</Label>
-        <Select id="role" {...form.register("role")}>
-          <option value="student">Student</option>
-          <option value="instructor">Instructor</option>
-        </Select>
       </div>
       <div className="space-y-2">
         <Label htmlFor="password">Password</Label>

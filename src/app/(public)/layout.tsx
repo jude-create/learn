@@ -22,8 +22,11 @@ export default async function PublicLayout({ children }: { children: React.React
             <Link className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:inline" href="/">
               Home
             </Link>
-            <Link className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:inline" href="/courses">
-              Courses
+            <Link className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:inline" href="/schools">
+              Schools
+            </Link>
+            <Link className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:inline" href="/search">
+              Search
             </Link>
             {session ? (
               <>
@@ -59,7 +62,7 @@ export default async function PublicLayout({ children }: { children: React.React
               Learn Big
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-6 text-primary-foreground/70">
-              A collaborative learning space for coding, secondary school subjects and university courses.
+              A collaborative academic space for school course hubs, student materials and useful discussions.
             </p>
           </div>
 
@@ -67,7 +70,8 @@ export default async function PublicLayout({ children }: { children: React.React
             <h2 className="text-sm font-semibold">Explore</h2>
             <div className="mt-4 grid gap-3 text-sm text-primary-foreground/70">
               <Link className="hover:text-primary-foreground" href="/">Home</Link>
-              <Link className="hover:text-primary-foreground" href="/courses">Browse courses</Link>
+              <Link className="hover:text-primary-foreground" href="/schools">Browse schools</Link>
+              <Link className="hover:text-primary-foreground" href="/search">Search resources</Link>
               <Link className="hover:text-primary-foreground" href="/register">Create account</Link>
             </div>
           </div>
@@ -75,25 +79,25 @@ export default async function PublicLayout({ children }: { children: React.React
           <div>
             <h2 className="text-sm font-semibold">Subjects</h2>
             <div className="mt-4 grid gap-3 text-sm text-primary-foreground/70">
-              <span>Coding and technology</span>
-              <span>Science and mathematics</span>
-              <span>Commercial and arts</span>
+              <span>Computer Science</span>
+              <span>Mathematics</span>
+              <span>Engineering</span>
             </div>
           </div>
 
           <div>
             <h2 className="text-sm font-semibold">Platform</h2>
             <div className="mt-4 grid gap-3 text-sm text-primary-foreground/70">
-              <span className="inline-flex items-center gap-2"><BookOpen className="h-4 w-4" aria-hidden /> Lessons</span>
+              <span className="inline-flex items-center gap-2"><BookOpen className="h-4 w-4" aria-hidden /> Materials</span>
               <span className="inline-flex items-center gap-2"><MessageSquareText className="h-4 w-4" aria-hidden /> Discussions</span>
-              <span className="inline-flex items-center gap-2"><Map className="h-4 w-4" aria-hidden /> Progress tracking</span>
+              <span className="inline-flex items-center gap-2"><Map className="h-4 w-4" aria-hidden /> Course hubs</span>
             </div>
           </div>
         </div>
         <div className="border-t border-primary-foreground/10">
           <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-5 text-sm text-primary-foreground/60 sm:flex-row sm:items-center sm:justify-between">
             <p>Learn Big MVP. Built for students and educators.</p>
-            <p>Courses, lessons, discussions and progress in one place.</p>
+            <p>Schools, materials, discussions and reputation in one place.</p>
           </div>
         </div>
       </footer>

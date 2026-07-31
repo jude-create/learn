@@ -14,7 +14,7 @@ import { PasswordInput } from "@/components/auth/password-input";
 
 const initialState = { ok: false, message: "" };
 
-export function LoginForm() {
+export function LoginForm({ redirectTo = "/dashboard" }: { redirectTo?: string }) {
   const [state, setState] = useState(initialState);
   const [pending, startTransition] = useTransition();
   const form = useForm<LoginInput>({
@@ -36,6 +36,7 @@ export function LoginForm() {
     const formData = new FormData();
     formData.set("email", parsed.data.email);
     formData.set("password", parsed.data.password);
+    formData.set("redirectTo", redirectTo);
     startTransition(async () => {
       const result = await loginAction(initialState, formData);
       setState(result);
@@ -60,6 +61,7 @@ export function LoginForm() {
         </Link>
       </div>
       <AuthFormMessage message={state.message} ok={state.ok} />
+      <input type="hidden" name="redirectTo" value={redirectTo} />
       <Button className="w-full" disabled={pending}>
         {pending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : null}
         {pending ? "Logging in..." : "Login"}

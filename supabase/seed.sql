@@ -65,3 +65,152 @@ values
   ('40000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000022'),
   ('40000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000021')
 on conflict (comment_id, user_id) do nothing;
+
+insert into public.schools (id, name, slug, country, state, is_verified)
+values
+  ('50000000-0000-0000-0000-000000000001', 'University of Lagos', 'unilag', 'Nigeria', 'Lagos', true),
+  ('50000000-0000-0000-0000-000000000002', 'University of Nigeria, Nsukka', 'unn', 'Nigeria', 'Enugu', true),
+  ('50000000-0000-0000-0000-000000000003', 'Nnamdi Azikiwe University', 'unizik', 'Nigeria', 'Anambra', true)
+on conflict (id) do update set name = excluded.name, is_verified = excluded.is_verified;
+
+insert into public.departments (id, school_id, name, slug)
+values
+  ('51000000-0000-0000-0000-000000000001', '50000000-0000-0000-0000-000000000001', 'Computer Science', 'computer-science'),
+  ('51000000-0000-0000-0000-000000000002', '50000000-0000-0000-0000-000000000001', 'Mathematics', 'mathematics'),
+  ('51000000-0000-0000-0000-000000000003', '50000000-0000-0000-0000-000000000002', 'Electrical Engineering', 'electrical-engineering'),
+  ('51000000-0000-0000-0000-000000000004', '50000000-0000-0000-0000-000000000003', 'Computer Science', 'computer-science'),
+  ('51000000-0000-0000-0000-000000000005', '50000000-0000-0000-0000-000000000003', 'Economics', 'economics')
+on conflict (school_id, slug) do update set name = excluded.name;
+
+update public.profiles
+set school_id = '50000000-0000-0000-0000-000000000001',
+    department_id = '51000000-0000-0000-0000-000000000001',
+    programme = 'BSc Computer Science',
+    graduation_year = 2028,
+    onboarding_completed = true
+where id in ('00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000022');
+
+update public.profiles
+set school_id = '50000000-0000-0000-0000-000000000002',
+    department_id = '51000000-0000-0000-0000-000000000003',
+    programme = 'BEng Electrical Engineering',
+    graduation_year = 2027,
+    onboarding_completed = true
+where id in ('00000000-0000-0000-0000-000000000023', '00000000-0000-0000-0000-000000000024');
+
+insert into public.academic_courses (
+  id,
+  school_id,
+  department_id,
+  course_code,
+  normalised_course_code,
+  title,
+  slug,
+  description,
+  academic_level,
+  semester,
+  status,
+  created_by
+)
+values
+  ('52000000-0000-0000-0000-000000000001', '50000000-0000-0000-0000-000000000001', '51000000-0000-0000-0000-000000000001', 'CSC 101', 'CSC101', 'Introduction to Computer Science', 'csc-101-introduction-to-computer-science', 'Foundational computing concepts, problem solving and programming ideas.', 100, 'first', 'active', '00000000-0000-0000-0000-000000000010'),
+  ('52000000-0000-0000-0000-000000000002', '50000000-0000-0000-0000-000000000001', '51000000-0000-0000-0000-000000000001', 'CSC 301', 'CSC301', 'Data Structures and Algorithms', 'csc-301-data-structures-and-algorithms', 'Arrays, lists, trees, graphs, algorithm analysis and implementation tradeoffs.', 300, 'first', 'active', '00000000-0000-0000-0000-000000000010'),
+  ('52000000-0000-0000-0000-000000000003', '50000000-0000-0000-0000-000000000001', '51000000-0000-0000-0000-000000000002', 'MTH 201', 'MTH201', 'Linear Algebra', 'mth-201-linear-algebra', 'Vector spaces, matrices, determinants, eigenvalues and linear transformations.', 200, 'second', 'active', '00000000-0000-0000-0000-000000000010'),
+  ('52000000-0000-0000-0000-000000000004', '50000000-0000-0000-0000-000000000002', '51000000-0000-0000-0000-000000000003', 'EEE 305', 'EEE305', 'Digital Electronics', 'eee-305-digital-electronics', 'Number systems, logic gates, combinational circuits and sequential design.', 300, 'first', 'active', '00000000-0000-0000-0000-000000000010'),
+  ('52000000-0000-0000-0000-000000000005', '50000000-0000-0000-0000-000000000003', '51000000-0000-0000-0000-000000000004', 'CSC 201', 'CSC201', 'Computer Programming II', 'csc-201-computer-programming-ii', 'Structured programming, data representation and practical problem solving.', 200, 'second', 'active', '00000000-0000-0000-0000-000000000010'),
+  ('52000000-0000-0000-0000-000000000006', '50000000-0000-0000-0000-000000000003', '51000000-0000-0000-0000-000000000005', 'ECO 101', 'ECO101', 'Principles of Economics', 'eco-101-principles-of-economics', 'Introductory microeconomics, macroeconomics and economic reasoning.', 100, 'first', 'active', '00000000-0000-0000-0000-000000000010')
+on conflict (id) do update set title = excluded.title, status = excluded.status;
+
+insert into public.course_moderators (course_id, user_id, assigned_by, is_active)
+values
+  ('52000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000010', true),
+  ('52000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000023', '00000000-0000-0000-0000-000000000010', true)
+on conflict (course_id, user_id) do update set is_active = excluded.is_active;
+
+insert into public.materials (
+  id,
+  course_id,
+  uploader_id,
+  title,
+  description,
+  material_type,
+  academic_session,
+  semester,
+  storage_path,
+  original_file_name,
+  mime_type,
+  file_size,
+  file_hash,
+  status,
+  approved_by,
+  approved_at,
+  download_count
+)
+values
+  ('53000000-0000-0000-0000-000000000001', '52000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000022', 'CSC 301 Heap and Graph Notes', 'Clean handwritten summary for priority queues and graph traversal.', 'notes', '2025/2026', 'first', 'materials/50000000-0000-0000-0000-000000000001/52000000-0000-0000-0000-000000000002/00000000-0000-0000-0000-000000000022/heap-graph-notes.pdf', 'heap-graph-notes.pdf', 'application/pdf', 245760, 'demo-hash-csc301-heap-graph-notes', 'approved', '00000000-0000-0000-0000-000000000021', now(), 3),
+  ('53000000-0000-0000-0000-000000000002', '52000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000021', 'CSC 301 2024 Past Exam', 'Past examination paper with question topics labelled.', 'past_exam', '2024/2025', 'first', 'materials/50000000-0000-0000-0000-000000000001/52000000-0000-0000-0000-000000000002/00000000-0000-0000-0000-000000000021/csc301-2024-past-exam.pdf', 'csc301-2024-past-exam.pdf', 'application/pdf', 188416, 'demo-hash-csc301-2024-past-exam', 'pending', null, null, 0),
+  ('53000000-0000-0000-0000-000000000003', '52000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000024', 'EEE 305 Logic Gates Slides', 'Lecture slides covering Boolean algebra and gate simplification.', 'lecture_slides', '2025/2026', 'first', 'materials/50000000-0000-0000-0000-000000000002/52000000-0000-0000-0000-000000000004/00000000-0000-0000-0000-000000000024/logic-gates-slides.pdf', 'logic-gates-slides.pdf', 'application/pdf', 391168, 'demo-hash-eee305-logic-gates-slides', 'rejected', null, null, 0)
+on conflict (id) do update set title = excluded.title, status = excluded.status;
+
+insert into public.upload_rewards (user_id, material_id, cycle_start, cycle_end, credits_awarded)
+values
+  ('00000000-0000-0000-0000-000000000022', '53000000-0000-0000-0000-000000000001', public.current_cycle_start(), public.current_cycle_end(), 2)
+on conflict (material_id) do nothing;
+
+insert into public.download_events (user_id, material_id, cycle_start, cycle_end, is_first_download_in_cycle, credit_consumed)
+values
+  ('00000000-0000-0000-0000-000000000021', '53000000-0000-0000-0000-000000000001', public.current_cycle_start(), public.current_cycle_end(), true, 1),
+  ('00000000-0000-0000-0000-000000000023', '53000000-0000-0000-0000-000000000001', public.current_cycle_start(), public.current_cycle_end(), true, 1)
+on conflict do nothing;
+
+insert into public.discussion_threads (id, course_id, author_id, title, body, tags, is_pinned)
+values
+  ('54000000-0000-0000-0000-000000000001', '52000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000022', 'How should I choose between BFS and DFS?', 'I understand both traversals individually, but I am not sure how to decide which one to use in exam questions.', array['graphs', 'algorithms'], true)
+on conflict (id) do update set title = excluded.title, body = excluded.body;
+
+insert into public.discussion_answers (id, thread_id, author_id, body)
+values
+  ('55000000-0000-0000-0000-000000000001', '54000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000021', 'Use BFS when shortest path by edge count matters or when exploring level by level. DFS is useful for backtracking, cycle checks and topological-style reasoning.')
+on conflict (id) do update set body = excluded.body;
+
+update public.discussion_threads
+set accepted_answer_id = '55000000-0000-0000-0000-000000000001'
+where id = '54000000-0000-0000-0000-000000000001';
+
+insert into public.answer_votes (answer_id, user_id, vote_value)
+values
+  ('55000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000022', 1)
+on conflict (answer_id, user_id) do update set vote_value = excluded.vote_value;
+
+insert into public.material_votes (material_id, user_id, vote_value)
+values
+  ('53000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000021', 1),
+  ('53000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000023', 1)
+on conflict (material_id, user_id) do update set vote_value = excluded.vote_value;
+
+insert into public.reputation_events (user_id, event_type, points, entity_type, entity_id, unique_event_key, description)
+values
+  ('00000000-0000-0000-0000-000000000022', 'approved_upload', 10, 'material', '53000000-0000-0000-0000-000000000001', 'seed:approved_upload:53000000-0000-0000-0000-000000000001', 'Approved upload seed reward'),
+  ('00000000-0000-0000-0000-000000000021', 'accepted_answer', 15, 'discussion_answer', '55000000-0000-0000-0000-000000000001', 'seed:accepted_answer:55000000-0000-0000-0000-000000000001', 'Accepted answer seed reward')
+on conflict (unique_event_key) do nothing;
+
+insert into public.content_flags (id, reporter_id, target_type, target_id, course_id, reason, description, status)
+values
+  ('56000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000022', 'material', '53000000-0000-0000-0000-000000000003', '52000000-0000-0000-0000-000000000004', 'low_quality', 'Several slides are unreadable and appear incomplete.', 'open')
+on conflict (id) do update set status = excluded.status;
+
+insert into public.course_suggestions (
+  id,
+  school_id,
+  department_id,
+  course_code,
+  normalised_course_code,
+  course_title,
+  academic_level,
+  semester,
+  suggested_by,
+  status
+)
+values
+  ('57000000-0000-0000-0000-000000000001', '50000000-0000-0000-0000-000000000001', '51000000-0000-0000-0000-000000000001', 'CSC 405', 'CSC405', 'Artificial Intelligence', 400, 'second', '00000000-0000-0000-0000-000000000021', 'pending')
+on conflict (id) do update set status = excluded.status;

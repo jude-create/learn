@@ -9,7 +9,7 @@ type SupabaseCookie = {
   options: CookieOptions;
 };
 
-const protectedPrefixes = ["/dashboard", "/learn"];
+const protectedPrefixes = ["/dashboard", "/learn", "/upload", "/settings"];
 const authRoutes = ["/login", "/register", "/forgot-password", "/reset-password"];
 
 export async function updateSession(request: NextRequest) {
@@ -47,19 +47,19 @@ export async function updateSession(request: NextRequest) {
   if (user && authRoutes.includes(pathname)) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("role,is_suspended")
+      .select("role,is_suspended,onboarding_completed")
       .eq("id", user.id)
       .single();
 
     if (profile && !profile.is_suspended) {
-      return NextResponse.redirect(new URL(`/dashboard/${profile.role}`, request.url));
+      return NextResponse.redirect(new URL(profile.onboarding_completed ? "/dashboard" : "/onboarding", request.url));
     }
   }
 
   if (user && isProtected) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("role,is_suspended")
+      .select("role,is_suspended,onboarding_completed")
       .eq("id", user.id)
       .single();
 
@@ -68,9 +68,8 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(new URL("/login?suspended=1", request.url));
     }
 
-    const rolePath = `/dashboard/${profile.role}`;
-    if (pathname.startsWith("/dashboard") && !pathname.startsWith(rolePath)) {
-      return NextResponse.redirect(new URL(rolePath, request.url));
+    if (!profile.onboarding_completed) {
+      return NextResponse.redirect(new URL("/onboarding", request.url));
     }
   }
 

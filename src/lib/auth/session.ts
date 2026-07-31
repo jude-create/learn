@@ -40,6 +40,10 @@ export async function requireProfile(role?: UserRole) {
     redirect("/login?suspended=1");
   }
 
+  if (!session.profile.onboarding_completed && role !== "admin") {
+    redirect("/onboarding");
+  }
+
   if (role && session.profile.role !== role) {
     redirect(getRoleDashboard(session.profile.role));
   }
